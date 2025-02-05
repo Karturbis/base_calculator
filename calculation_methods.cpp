@@ -22,7 +22,7 @@ int binary_to_decimal(int binary_number[8]) {
   return decimal_number;
 }
 
-vector<int> decimal_to_smaller(int decimal_number, int new_base) {
+vector<int> decimal_to_other(int decimal_number, int new_base) {
     int remainder = 0;
     int quotient = decimal_number;
     vector<int> new_number = {};
@@ -32,9 +32,15 @@ vector<int> decimal_to_smaller(int decimal_number, int new_base) {
         quotient = (int) quotient / new_base;
         new_number.insert(new_number.begin(), remainder); // inserts remainder at the begin of the number
     }
+/*
+    if (new_base > 10) {
+      int vector_size = static_cast<int>(new_number.size());
+      for (int i = 0; i < vector_size; i++){
+      }
+    }
+*/
     return new_number;
 }
-
 
 
 int main() {
@@ -42,8 +48,8 @@ int main() {
     int decimal_number = binary_to_decimal(input_number);
     cout<< "Binary to decimal:" <<endl;
     cout<< decimal_number <<endl;
-    int new_base = 7;
-    vector<int> test = decimal_to_smaller(234, new_base);
+    int new_base = 11;
+    vector<int> test = decimal_to_other(234, new_base);
     cout<< "Decimal to" << " ";
     cout<< new_base << ":\n";
     print_vector(test);
