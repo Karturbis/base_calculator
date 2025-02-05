@@ -1,3 +1,4 @@
+#include <cmath>
 #include <LiquidCrystal.h>
 // declare led pins:
 int led_0 = 6;
@@ -57,24 +58,26 @@ void loop()
   int enter_input = 0;
   int button_0_input = 0;
   int button_1_input = 0;
-  int input_number[8] = {0, 0, 0, 0, 0, 0, 0};
+  int input_number[8] = {0, 0, 0, 0, 0, 0, 0, 0};
   int input_counter = 0;
-  while (true) {
+  while (inputing) {
     button_0_input = digitalRead(button_0);
     button_1_input = digitalRead(button_1);
     if (button_0_input) {
       input_number[input_counter] = LOW;
-      input_counter = input_counter + 1;
+      input_counter ++;
     }
     if (button_1_input) {
       input_number[input_counter] = HIGH;
-      input_counter = input_counter + 1;
+      input_counter ++;
     }
     enter_input = digitalRead(button_enter);
     if (enter_input) {
       inputing = false;
     }
-    
+    if (input_counter == 8) {
+      inputing = false;
+    }
     digitalWrite(led_0, input_number[0]);
     digitalWrite(led_1, input_number[1]);
     digitalWrite(led_2, input_number[2]);
@@ -83,21 +86,19 @@ void loop()
     digitalWrite(led_5, input_number[5]);
     digitalWrite(led_6, input_number[6]);
     digitalWrite(led_7, input_number[7]);
-    
     delay(100);
   }
+
 }
 
+int base_10(int base_2_number[8]) {
+  int base_10_number;
+  for (int i = 7; i >= 0; i--) {
+
+  }
 
 
 
+  return base_10_number;
 
-
-
-
-
-
-
-
-
-
+}
