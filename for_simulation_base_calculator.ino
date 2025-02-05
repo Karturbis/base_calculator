@@ -88,17 +88,14 @@ void loop()
     digitalWrite(led_7, input_number[7]);
     delay(100);
   }
-
 }
 
 int base_10(int base_2_number[8]) {
-  int base_10_number;
+  int base_10_number = 0;
   for (int i = 7; i >= 0; i--) {
-
+    if (base_2_number[i]){
+      base_10_number += pow(2, 7-i);
+    }
   }
-
-
-
   return base_10_number;
-
 }
