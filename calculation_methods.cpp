@@ -7,7 +7,7 @@ using namespace std;
 void print_vector(vector<int> input){
     int vector_size = static_cast<int>(input.size());
     for(int i = 0; i < vector_size; i++) {
-        cout<< input[i] <<" ";
+        cout<< input[i] <<"";
     }
     cout<< "\n";
 }
@@ -30,7 +30,7 @@ vector<int> decimal_to_smaller(int decimal_number, int new_base) {
     for (; quotient > 0;){
         remainder = quotient % new_base;
         quotient = (int) quotient / new_base;
-        new_number.push_back(remainder);
+        new_number.insert(new_number.begin(), remainder); // inserts remainder at the begin of the number
     }
     return new_number;
 }
@@ -38,11 +38,14 @@ vector<int> decimal_to_smaller(int decimal_number, int new_base) {
 
 
 int main() {
-    int input_number[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+    int input_number[8] = {1, 0, 1, 0, 0, 0, 1, 0};
     int decimal_number = binary_to_decimal(input_number);
     cout<< "Binary to decimal:" <<endl;
     cout<< decimal_number <<endl;
-    vector<int> test = decimal_to_smaller(55, 4);
+    int new_base = 7;
+    vector<int> test = decimal_to_smaller(234, new_base);
+    cout<< "Decimal to" << " ";
+    cout<< new_base << ":\n";
     print_vector(test);
     return 0;
 }
