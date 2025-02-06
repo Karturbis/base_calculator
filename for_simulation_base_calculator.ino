@@ -1,5 +1,7 @@
-#include <cmath>
+// imports:
+#include <math.h>
 #include <LiquidCrystal.h>
+#include <Keypad.h>
 // declare led pins:
 int led_0 = 6;
 int led_1 = 7;
@@ -24,8 +26,23 @@ int button_enter = 17;
 int switch_number = 16;
 int switch_base = 15;
 
-//declaser display pins:
+//declare display pins:
 LiquidCrystal lcd_1(1, 0, 5, 4, 3, 2);
+
+//keypad:
+const int ROW_NUMBER = 4;
+const int CLOUMN_NUMBER = 4;
+char keys[ROW_NUMBER][CLOUMN_NUMBER] = {
+  {'1', '2', '3', 'A'},
+  {'4', '5', '6', 'B'},
+  {'7', '8', '9', 'C'},
+  {'*', '0', '#', 'D'}
+};
+
+byte pin_rows[ROW_NUMBER] = {13, 12, 11, 10};
+byte pin_columns[CLOUMN_NUMBER] = {9, 8, 7, 6};
+
+Keypad keypad = Keypad( makeKeymap(keys), pin_rows, pin_columns, ROW_NUMBER, CLOUMN_NUMBER);
 
 void setup()
 {
@@ -60,9 +77,11 @@ void loop()
   int button_1_input = 0;
   int input_number[8] = {0, 0, 0, 0, 0, 0, 0, 0};
   int input_counter = 0;
+  char key_input;
   while (inputing) {
     button_0_input = digitalRead(button_0);
     button_1_input = digitalRead(button_1);
+    key_input = keypad.getKey();
     if (button_0_input) {
       input_number[input_counter] = LOW;
       input_counter ++;
@@ -86,6 +105,10 @@ void loop()
     digitalWrite(led_5, input_number[5]);
     digitalWrite(led_6, input_number[6]);
     digitalWrite(led_7, input_number[7]);
+    if (key_input) {
+      lcd_1.clear();
+      lcd_1.print(key_input);
+    }
     delay(100);
   }
 }
