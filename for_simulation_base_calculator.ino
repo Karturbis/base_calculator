@@ -72,6 +72,7 @@ int mode_input_number(int base) {
       }
     delay(100);
 }
+}
 
 
 int binary_to_decimal(int binary_number[8]) {
