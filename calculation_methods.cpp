@@ -64,7 +64,7 @@ int other_to_decimal(int other_number[8], int base) {
 }
 
 vector<char> decimal_to_other(int decimal_number, int new_base) {
-    if (new_base > 0) {
+    vector<char> new_number_char = {};
       bool is_negativ;
       if (decimal_number < 0) {
         is_negativ = true;
@@ -76,11 +76,14 @@ vector<char> decimal_to_other(int decimal_number, int new_base) {
       int remainder = 0;
       int quotient = decimal_number;
       vector<int> new_number = {};
-      vector<char> new_number_char = {};
 
-      for (; quotient > 0;){
+      for (; quotient != 0;){
           remainder = quotient % new_base;
           quotient = (int) quotient / new_base;
+          if (remainder < 0) {
+            remainder += abs(new_base);
+            quotient ++;
+          }
           new_number.insert(new_number.begin(), remainder); // inserts remainder at the begin of the number
       }
       int vector_size = static_cast<int>(new_number.size());
@@ -90,11 +93,7 @@ vector<char> decimal_to_other(int decimal_number, int new_base) {
       if (is_negativ) {
         new_number_char.insert(new_number_char.begin(), '-');
       }
-    }
-    else {
-      
-    }
-    return new_number_char;
+      return new_number_char;
 }
 
 int main() {
@@ -102,8 +101,8 @@ int main() {
     int decimal_number = other_to_decimal(input_number, 2);
     cout<< "Other to decimal:" <<endl;
     cout<< decimal_number <<endl;
-    int new_base = 9;
-    vector<char> test = decimal_to_other(-12, new_base);
+    int new_base = -2;
+    vector<char> test = decimal_to_other(2, new_base);
     cout<< "Decimal to" << " ";
     cout<< new_base << ":\n";
     print_vector(test);
