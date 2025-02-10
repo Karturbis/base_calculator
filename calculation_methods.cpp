@@ -105,6 +105,10 @@ vector<char> decimal_to_other(int decimal_number, int new_base, int denominator 
 vector<char> fractional_bases(int decimal_number, int numerator, int denominator) {
   //add check, if fraction can be simplified
   if (abs(denominator) > abs(numerator)) {
+    if (numerator < 0 || denominator < 0) { //ensure that negative sign is always in the numerator
+      denominator = - abs(denominator); //since the fraction is upside down, the denominator variable needs the sign
+      numerator = abs(numerator);
+    }
     vector<char>result = decimal_to_other(decimal_number, denominator, numerator);
     reverse(result.begin(), result.end());
     result.insert(result.begin() + 1, '.');
@@ -115,6 +119,10 @@ vector<char> fractional_bases(int decimal_number, int numerator, int denominator
     throw invalid_argument("received one as value, this is not valid");
   }
   else{
+    if (numerator < 0 || denominator < 0) { // ensure that negative sign is always in the numerator
+      denominator = abs(denominator);
+      numerator = - abs(numerator);
+    }
     return decimal_to_other(decimal_number, numerator, denominator);
   }
 
@@ -124,8 +132,8 @@ int main() {
     int input_number[8] = {1, 0, 1, 0, 0, 0, 1, 0};
     int decimal_number = other_to_decimal(input_number, 2);
     int new_base = -10;
-    int new_base_numerator = -2;
-    int new_base_denominator = 3;
+    int new_base_numerator = 3;
+    int new_base_denominator = -2;
     vector<char> test = decimal_to_other(24, new_base);
     vector<char> test_fraction = fractional_bases(12, new_base_numerator, new_base_denominator);
     cout<< "Other to decimal:" <<endl;
