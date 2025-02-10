@@ -45,8 +45,6 @@ unordered_map<char, int> chat_to_int =
   {'Z', 35},
 };
 
-
-
 void print_vector(vector<char> input){
     int vector_size = static_cast<char>(input.size());
     for(int i = 0; i < vector_size; i++) {
@@ -66,28 +64,43 @@ int other_to_decimal(int other_number[8], int base) {
 }
 
 vector<char> decimal_to_other(int decimal_number, int new_base) {
-    int remainder = 0;
-    int quotient = decimal_number;
-    vector<int> new_number = {};
-    vector<char> new_number_char = {};
+    if (new_base > 0) {
+      bool is_negativ;
+      if (decimal_number < 0) {
+        is_negativ = true;
+        decimal_number = abs(decimal_number);
+      }
+      else {
+        is_negativ = false;
+      }
+      int remainder = 0;
+      int quotient = decimal_number;
+      vector<int> new_number = {};
+      vector<char> new_number_char = {};
 
-    for (; quotient > 0;){
-        remainder = quotient % new_base;
-        quotient = (int) quotient / new_base;
-        new_number.insert(new_number.begin(), remainder); // inserts remainder at the begin of the number
+      for (; quotient > 0;){
+          remainder = quotient % new_base;
+          quotient = (int) quotient / new_base;
+          new_number.insert(new_number.begin(), remainder); // inserts remainder at the begin of the number
+      }
+      int vector_size = static_cast<int>(new_number.size());
+      for (int i = 0; i < vector_size; i++){
+        new_number_char.push_back(int_to_char[new_number[i]]);
+      }
+      if (is_negativ) {
+        new_number_char.insert(new_number_char.begin(), '-');
+      }
     }
-    int vector_size = static_cast<int>(new_number.size());
-    for (int i = 0; i < vector_size; i++){
-      new_number_char.push_back(int_to_char[new_number[i]]);
+    else {
+      
     }
     return new_number_char;
 }
 
-
 int main() {
     int input_number[8] = {1, 0, 1, 0, 0, 0, 1, 0};
-    int decimal_number = other_to_decimal(input_number);
-    cout<< "Binary to decimal:" <<endl;
+    int decimal_number = other_to_decimal(input_number, 2);
+    cout<< "Other to decimal:" <<endl;
     cout<< decimal_number <<endl;
     int new_base = 9;
     vector<char> test = decimal_to_other(-12, new_base);
