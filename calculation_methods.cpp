@@ -66,7 +66,7 @@ int other_to_decimal(int other_number[8], int base) {
 vector<char> decimal_to_other(int decimal_number, int new_base) {
     vector<char> new_number_char = {};
       bool is_negativ;
-      if (decimal_number < 0) {
+      if (decimal_number < 0 && new_base > 0) {
         is_negativ = true;
         decimal_number = abs(decimal_number);
       }
@@ -102,7 +102,7 @@ int main() {
     cout<< "Other to decimal:" <<endl;
     cout<< decimal_number <<endl;
     int new_base = -2;
-    vector<char> test = decimal_to_other(2, new_base);
+    vector<char> test = decimal_to_other(-2, new_base);
     cout<< "Decimal to" << " ";
     cout<< new_base << ":\n";
     print_vector(test);
