@@ -11,8 +11,10 @@ const char int_to_char[36] =
   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
 };
 
-int base_1[3];
-int base_2[3];
+int base_from_numerator[3];
+int base_from_denominator[3];
+int base_to_numerator[3];
+int base_to_denominator[3];
 String mode = "menu";
 int input_length = 16;
 
@@ -173,15 +175,15 @@ char* decimal_to_other(int decimal_number, int new_base, int denominator = 1) {
 }
 
 char* fractional_bases(int decimal_number, int numerator, int denominator) {
-  //add check, if fraction can be simplified
+  // add check, if fraction can be simplified
   if (abs(denominator) > abs(numerator)) {
-    if (numerator < 0 || denominator < 0) { //ensure that negative sign is always in the numerator
-      denominator = - abs(denominator); //since the fraction is upside down, the denominator variable needs the sign
+    if (numerator < 0 || denominator < 0) { // ensure that negative sign is always in the numerator
+      denominator = - abs(denominator); // since the fraction is upside down, the denominator variable needs the sign
       numerator = abs(numerator);
     }
     char* result = decimal_to_other(decimal_number, denominator, numerator);
-    //reverse(result.begin(), result.end());
-    //result.insert(result.begin() + 1, '.');
+    // reverse(result.begin(), result.end());
+    // result.insert(result.begin() + 1, '.');
     return result;
   }
   else{
