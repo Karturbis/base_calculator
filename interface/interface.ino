@@ -2,25 +2,27 @@
 #include <math.h>
 #include <LiquidCrystal.h>
 #include <Keypad.h>
+#include <UnorderedMap.h>
 
+using namespace std;
 
-String user_input;
+const char int_to_char[36] =
+{
+  '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+};
+
 int base_1[3];
 int base_2[3];
-const char modes[4] = {'m', '1', '2', 'c'};
-char mode;
+String mode = "menu";
+int input_length = 16;
 
 // declare display pins
-const int rs = 0;
-const int en = 1;
-const int data_0 = 8;
-const int data_1 = 9;
-const int data_2 = 10;
-const int data_3 = 11;
-const int data_4 = 2;
-const int data_5 = 3;
-const int data_6 = 4;
-const int data_7 = 5;
+const byte rs = 0;
+const byte en = 1;
+const byte data_4 = 2;
+const byte data_5 = 3;
+const byte data_6 = 4;
+const byte data_7 = 5;
 
 // init display pins:
 LiquidCrystal lcd(rs, en, data_4, data_5, data_6, data_7);
@@ -36,6 +38,11 @@ char keys[ROW_NUMBER][COLUMN_NUMBER] = {
 };
 byte pin_rows[ROW_NUMBER] = {13, 12, 11, 10};
 byte pin_columns[COLUMN_NUMBER] = {9, 8, 7, 6};
+
+// key meanings
+const char up = 'A';
+const char down = 'B';
+const char select = '#';
 // init keypad:
 Keypad keypad = Keypad(makeKeymap(keys), pin_rows, pin_columns, ROW_NUMBER, COLUMN_NUMBER);
 
@@ -45,46 +52,25 @@ void setup() {
   // print welcome screen
   lcd.print("Base number calc");
   delay(1000);
-  menu();
 }
 
 void loop() {
-  switch (mode) {
-    case 'm':
-      menu();
-      break;
-    case '1':
-      input_base_1();
-      break;
-    case '2':
-      input_base_2();
-      break;
-    case 'c':
-      calculate();
-      break;
-    default:
-      menu();
-      break;
+  if(mode = "menu") {
+    menu();
   }
 }
 
-void input() {
- bool running = true;
- while (running) {
+String get_input(String msg) {
+ String user_input = "";
+ while (true) {
     lcd.clear();
-    lcd.print(mode);
+    lcd.print(msg);
     char key = keypad.getKey();
     if (key) {
       if (key == '#') {
-        break;
+        return user_input;
       }
-      if (key == 'A') {
-        lcd.clear();
-        mode = "menu";
-        user_input = "";
-        break;
-      }
-      user_input = String(user_input + key);
+      user_input = user_input + key;
     }
     lcd.setCursor(0, 1);
     lcd.print(user_input);
@@ -94,30 +80,115 @@ void input() {
 }
 
 void menu() {
-  mode = 'm';
-  input();
+  const byte optnum = 4;
+  const String options[optnum] = {"opt 0", "opt 1", "opt 2", "opt 3"};
+  byte japanese_ogre_location = 0;
+  bool japanese_ogre_direction = true; //true = top, false = bottom
+
   lcd.clear();
-  lcd.print(user_input);
-  mode = modes[user_input.toInt()];
-}
-
-void input_base_1() {
-  mode = '1';
-  input();
-
-  //base_1 = {};
-
-}
-
-void input_base_2() {
-  mode = '2';
-  input();
-  lcd.clear();
-  lcd.print("Base 1 is:");
+  lcd.print(options[japanese_ogre_location]);
   lcd.setCursor(0, 1);
-  lcd.print(user_input);
+  lcd.print(options[japanese_ogre_location+1]);
+  lcd.setCursor(7, (japanese_ogre_direction)? 0:1);
+  lcd.print("<");
+  
+  while (true) {
+    char key = keypad.getKey();
+    if (key) {
+      if(key == up) {
+        if(japanese_ogre_direction){
+          japanese_ogre_location = (japanese_ogre_location+(optnum-2)) % (optnum-1);
+        }
+        japanese_ogre_direction = (japanese_ogre_location == optnum-2)? !japanese_ogre_direction:true;
+
+      } else if(key == down){
+        if(!japanese_ogre_direction){
+          japanese_ogre_location = (japanese_ogre_location+1) % (optnum-1);
+        }
+        japanese_ogre_direction = (japanese_ogre_location == 0)? !japanese_ogre_direction:false;
+      }
+      lcd.clear();
+      lcd.print(options[japanese_ogre_location]);
+      lcd.setCursor(0, 1);
+      lcd.print(options[japanese_ogre_location+1]);
+      lcd.setCursor(7, (japanese_ogre_direction)? 0:1);
+      lcd.print("<");
+    }
+    delay(50);
+  }
 }
 
 void calculate() {
   // add calculation code
+}
+
+// calculation methods:
+
+int other_to_decimal(int other_number[8], int base) {
+  int decimal_number = 0;
+  for (int i = 7; i >= 0; i--) {
+    if (other_number[i]){
+      decimal_number += pow(base, 7-i);
+    }
+  }
+  return decimal_number;
+}
+
+char* decimal_to_other(int decimal_number, int new_base, int denominator = 1) {
+    char new_number_char[input_length] = {' ', ' ', ' ', ' ',' ', ' ', ' ', ' ',' ', ' ', ' ', ' ',' ', ' ', ' ', ' '};
+      bool is_negativ;
+      if (decimal_number < 0 && new_base > 0) {
+        is_negativ = true;
+        decimal_number = abs(decimal_number);
+      }
+      else {
+        is_negativ = false;
+      }
+      int remainder = 0;
+      int quotient = decimal_number;
+      int new_number[input_length] = {};
+
+      for (int i = input_length-1; quotient != 0; i--){
+          remainder = quotient % new_base;
+          quotient = (int) quotient / new_base;
+          if (remainder < 0) { // important only for negative bases
+            remainder += abs(new_base);
+            quotient ++;
+          }
+          quotient *= denominator;
+          new_number[i] = remainder; // inserts remainder at the begin of the number
+      }
+      for (int i = input_length-1; new_number[i] != ' ' && i > 0; i--){
+        new_number_char[i] = int_to_char[new_number[i]];
+      }
+      if (is_negativ) {
+        for (int i = input_length-1; i > 0; i--) {
+          if (new_number[i] == ' ') {
+            new_number_char[i] = '-';
+            break;
+          }
+        }
+      }
+      return new_number_char;
+}
+
+char* fractional_bases(int decimal_number, int numerator, int denominator) {
+  //add check, if fraction can be simplified
+  if (abs(denominator) > abs(numerator)) {
+    if (numerator < 0 || denominator < 0) { //ensure that negative sign is always in the numerator
+      denominator = - abs(denominator); //since the fraction is upside down, the denominator variable needs the sign
+      numerator = abs(numerator);
+    }
+    char* result = decimal_to_other(decimal_number, denominator, numerator);
+    //reverse(result.begin(), result.end());
+    //result.insert(result.begin() + 1, '.');
+    return result;
+  }
+  else{
+    if (numerator < 0 || denominator < 0) { // ensure that negative sign is always in the numerator
+      denominator = abs(denominator);
+      numerator = - abs(numerator);
+    }
+    return decimal_to_other(decimal_number, numerator, denominator);
+  }
 }
