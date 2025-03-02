@@ -56,8 +56,17 @@ void setup() {
 }
 
 void loop() {
-  if(mode = "menu") {
+  if(mode == "menu") {
     menu();
+  }
+  else if (mode == "calculate") {
+    menu();
+  }
+  else if (mode == "set base 1") {
+    set_base(1);
+  }
+  else if (mode == "set base 2") {
+    set_base(2);
   }
 }
 
@@ -77,20 +86,19 @@ String get_input(String msg) {
     lcd.print(user_input);
     delay(50);
  }
-
 }
 
 void menu() {
-  const byte optnum = 4;
-  const String options[optnum] = {"opt 0", "opt 1", "opt 2", "opt 3"};
-  byte japanese_ogre_location = 0;
+  byte optnum = 4;
+  const String options[optnum] = {"calculate", "set base 1", "set base 2", "dino"};
+  byte japanese_ogre_location = 0; 
   bool japanese_ogre_direction = true; //true = top, false = bottom
 
   lcd.clear();
   lcd.print(options[japanese_ogre_location]);
   lcd.setCursor(0, 1);
   lcd.print(options[japanese_ogre_location+1]);
-  lcd.setCursor(7, (japanese_ogre_direction)? 0:1);
+  lcd.setCursor(11, (japanese_ogre_direction)? 0:1);
   lcd.print("<");
   
   while (true) {
@@ -107,12 +115,16 @@ void menu() {
           japanese_ogre_location = (japanese_ogre_location+1) % (optnum-1);
         }
         japanese_ogre_direction = (japanese_ogre_location == 0)? !japanese_ogre_direction:false;
+      } else if(key == select){
+        mode = options[japanese_ogre_location + !japanese_ogre_direction];
+        break;
       }
+
       lcd.clear();
       lcd.print(options[japanese_ogre_location]);
       lcd.setCursor(0, 1);
       lcd.print(options[japanese_ogre_location+1]);
-      lcd.setCursor(7, (japanese_ogre_direction)? 0:1);
+      lcd.setCursor(11, !japanese_ogre_direction);
       lcd.print("<");
     }
     delay(50);
