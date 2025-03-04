@@ -44,6 +44,7 @@ byte pin_columns[COLUMN_NUMBER] = {9, 8, 7, 6};
 const char up = 'A';
 const char down = 'B';
 const char select = '#';
+const char menu_key = 'C';
 // init keypad:
 Keypad keypad = Keypad(makeKeymap(keys), pin_rows, pin_columns, ROW_NUMBER, COLUMN_NUMBER);
 
@@ -51,7 +52,8 @@ void setup() {
   //init lcd (columns, rows):
   lcd.begin(16, 2);
   // print welcome screen
-  lcd.print("Base number calc");
+  String msg = "-12number calc";
+  lcd.print(msg.substring(-1));
   delay(1000);
 }
 
@@ -59,46 +61,53 @@ void loop() {
   if(mode == "menu") {
     menu();
   }
-  else if (mode == "calculate") {
-    menu();
-  }
-  else if (mode == "set base 1") {
+  else {
     set_base(1);
-  }
-  else if (mode == "set base 2") {
-    set_base(2);
+    lcd.clear();
+    lcd.print("not implemented");
+    lcd.setCursor(0, 1);
+    lcd.print("return to menu");
+    mode = "menu";
+    delay(2000);
   }
 }
 
 String get_input(String msg) {
- String user_input = "";
- while (true) {
-    lcd.clear();
-    lcd.print(msg);
-    char key = keypad.getKey();
-    if (key) {
-      if (key == '#') {
-        return user_input;
+  String user_input = "";
+  lcd.clear();
+  lcd.print(msg);
+  while (true) {
+      char key = keypad.getKey();
+      if (key) {
+        if (key == select) {
+          return user_input;
+        } else if(key == menu_key){
+          user_input = user_input + japanese_ogre_chosen_one();
+          lcd.setCursor(0, 1);
+          lcd.print(user_input);
+        } else{
+          user_input = user_input + key;
+        }
+        lcd.clear();
+        lcd.print(msg);
+        lcd.setCursor(0, 1);
+        lcd.print(user_input);
       }
-      user_input = user_input + key;
-    }
-    lcd.setCursor(0, 1);
-    lcd.print(user_input);
-    delay(50);
- }
+      delay(50);
+  }
 }
 
-void menu() {
-  byte optnum = 4;
-  const String options[optnum] = {"calculate", "set base 1", "set base 2", "dino"};
-  byte japanese_ogre_location = 0; 
+char japanese_ogre_chosen_one(){
+  const byte optnum = 3;
+  const char options[optnum] = {'-', '/', ' '};
+  byte japanese_ogre_location = 0;
   bool japanese_ogre_direction = true; //true = top, false = bottom
 
   lcd.clear();
   lcd.print(options[japanese_ogre_location]);
   lcd.setCursor(0, 1);
   lcd.print(options[japanese_ogre_location+1]);
-  lcd.setCursor(11, (japanese_ogre_direction)? 0:1);
+  lcd.setCursor(7, (japanese_ogre_direction)? 0:1);
   lcd.print("<");
   
   while (true) {
@@ -116,7 +125,49 @@ void menu() {
         }
         japanese_ogre_direction = (japanese_ogre_location == 0)? !japanese_ogre_direction:false;
       } else if(key == select){
-        mode = options[japanese_ogre_location + !japanese_ogre_direction];
+        return options[japanese_ogre_location+!japanese_ogre_direction];
+      }
+
+      lcd.clear();
+      lcd.print(options[japanese_ogre_location]);
+      lcd.setCursor(0, 1);
+      lcd.print(options[japanese_ogre_location+1]);
+      lcd.setCursor(7, (japanese_ogre_direction)? 0:1);
+      lcd.print("<");
+    }
+    delay(50);
+  }
+}
+
+void menu() {
+  const byte optnum = 4;
+  const String options[optnum] = {"calc", "base 1", "base 2", "opt 3"};
+  byte japanese_ogre_location = 0;
+  bool japanese_ogre_direction = true; //true = top, false = bottom
+
+  lcd.clear();
+  lcd.print(options[japanese_ogre_location]);
+  lcd.setCursor(0, 1);
+  lcd.print(options[japanese_ogre_location+1]);
+  lcd.setCursor(7, (japanese_ogre_direction)? 0:1);
+  lcd.print("<");
+  
+  while (true) {
+    char key = keypad.getKey();
+    if (key) {
+      if(key == up) {
+        if(japanese_ogre_direction){
+          japanese_ogre_location = (japanese_ogre_location+(optnum-2)) % (optnum-1);
+        }
+        japanese_ogre_direction = (japanese_ogre_location == optnum-2)? !japanese_ogre_direction:true;
+
+      } else if(key == down){
+        if(!japanese_ogre_direction){
+          japanese_ogre_location = (japanese_ogre_location+1) % (optnum-1);
+        }
+        japanese_ogre_direction = (japanese_ogre_location == 0)? !japanese_ogre_direction:false;
+      } else if(key == select){
+        mode = options[japanese_ogre_location+!japanese_ogre_direction];
         break;
       }
 
@@ -124,7 +175,7 @@ void menu() {
       lcd.print(options[japanese_ogre_location]);
       lcd.setCursor(0, 1);
       lcd.print(options[japanese_ogre_location+1]);
-      lcd.setCursor(11, !japanese_ogre_direction);
+      lcd.setCursor(7, (japanese_ogre_direction)? 0:1);
       lcd.print("<");
     }
     delay(50);
@@ -134,6 +185,33 @@ void menu() {
 void calculate() {
   // add calculation code
 }
+
+void set_base(int the_japanese_ogres_wanted_to_know_what_base_to_change_komma_so_the_japanese_ogres_crafted_this_variable_period_it_apostrophe_s_purpose_is_telling_the_function_what_base_to_change_period){
+  String user_input = (get_input("Base " + String(the_japanese_ogres_wanted_to_know_what_base_to_change_komma_so_the_japanese_ogres_crafted_this_variable_period_it_apostrophe_s_purpose_is_telling_the_function_what_base_to_change_period) + ":"));
+  lcd.clear();
+  if (user_input.indexOf('/', user_input.indexOf('/')+1) != -1) {
+    lcd.print("bad / try again");
+    return;
+  } else{
+    bool is_negative = false;
+    for(int i = user_input.indexOf('-'); i != -1; i = user_input.indexOf('-', i+1)){
+      if(i != 0 && user_input[i-1] != '/'){
+        lcd.print("bad - try again");
+        return;
+      }
+    }
+  }
+  int numerator = user_input.substring(0, user_input.indexOf('/')).toInt();
+  int denominator = user_input.substring(user_input.indexOf('/')).toInt();
+
+
+
+
+  delay(1000);
+}
+
+
+
 
 // calculation methods:
 
@@ -186,15 +264,15 @@ char* decimal_to_other(int decimal_number, int new_base, int denominator = 1) {
 }
 
 char* fractional_bases(int decimal_number, int numerator, int denominator) {
-  // add check, if fraction can be simplified
+  //add check, if fraction can be simplified
   if (abs(denominator) > abs(numerator)) {
-    if (numerator < 0 || denominator < 0) { // ensure that negative sign is always in the numerator
-      denominator = - abs(denominator); // since the fraction is upside down, the denominator variable needs the sign
+    if (numerator < 0 || denominator < 0) { //ensure that negative sign is always in the numerator
+      denominator = - abs(denominator); //since the fraction is upside down, the denominator variable needs the sign
       numerator = abs(numerator);
     }
     char* result = decimal_to_other(decimal_number, denominator, numerator);
-    // reverse(result.begin(), result.end());
-    // result.insert(result.begin() + 1, '.');
+    //reverse(result.begin(), result.end());
+    //result.insert(result.begin() + 1, '.');
     return result;
   }
   else{
