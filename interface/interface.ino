@@ -59,11 +59,11 @@ void setup() {
   // print welcome screen
   //lcd.print("Base number calc)";
   //delay(1000);
-  int manum[16]={0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1};
+  //int manum[16]={0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1};
   //lcd.print(other_to_decimal(manum, 2, 1));
-  char x[16];
-  x = decimal_to_other(1, 2);
-  lcd.print(x);
+  char* ptr = fractional_bases(6, 2, -3);
+  //char y = *ptr;
+  lcd.print(japanese_ogre_transmutation_wizard(ptr));
 }
 
 void loop() {
@@ -256,8 +256,8 @@ float other_to_decimal(int other_number[input_length], int numerator, int denomi
   return decimal_number;
 }
 
-char* decimal_to_other(int decimal_number, int new_base, int denominator = 1) {
-  char new_number_char[input_length] = {' ', ' ', ' ', ' ',' ', ' ', ' ', ' ',' ', ' ', ' ', ' ',' ', ' ', ' ', ' '}; //japanese ogres where to lazy to do it properly
+char* decimal_to_other(int decimal_number, int new_base, int denominator) {
+  static char new_number_char[input_length] = {' ', ' ', ' ', ' ',' ', ' ', ' ', ' ',' ', ' ', ' ', ' ',' ', ' ', ' ', ' '}; //japanese ogres where to lazy to do it properly
   bool is_negativ;
   if (decimal_number < 0 && new_base > 0) {
     is_negativ = true;
@@ -279,14 +279,14 @@ char* decimal_to_other(int decimal_number, int new_base, int denominator = 1) {
     new_number[i] = remainder; // inserts remainder at the begin of the number
   }
   for(int i = 0; i < input_length; i++){
-    if(!new_number[i] + 1){
+    if(new_number[i] != -1){
       new_number_char[i] = int_to_char[new_number[i]];
     }
   }
 
   if (is_negativ){
     for (int i = input_length-1; i > 0; i--) {
-      if (!new_number[i] + 1){
+      if (new_number[i] != -1){
         new_number_char[i] = '-';
         break;
       }
@@ -297,23 +297,47 @@ char* decimal_to_other(int decimal_number, int new_base, int denominator = 1) {
 
 char* fractional_bases(int decimal_number, int numerator, int denominator) {
   //add check, if fraction can be simplified
+  if (numerator < 0 && denominator < 0){
+    numerator = abs(numerator);
+    denominator = abs(denominator);
+  }
   if (abs(denominator) > abs(numerator)) {
     if (numerator < 0 || denominator < 0) { //ensure that negative sign is always in the numerator
-      denominator = - abs(denominator); //since the fraction is upside down, the denominator variable needs the sign
+      denominator = -abs(denominator); //since the fraction is upside down, the denominator variable needs the sign
       numerator = abs(numerator);
     }
-    char* result = decimal_to_other(decimal_number, denominator, numerator);
-    //reverse(result.begin(), result.end());
-    //result.insert(result.begin() + 1, '.');
+    char* flipped_result = decimal_to_other(decimal_number, denominator, numerator);
+    static char result[input_length];
+    int japanese_ogre_count = 0;
+    for (int i = 0; i < input_length; i++){
+      if (*(flipped_result+i) == ' '){
+        result[i] = ' ';
+        japanese_ogre_count++;
+      } else {
+        result[japanese_ogre_count + input_length - i - 1] = *(flipped_result+i);
+      }
+    }
+    // reverse(result.begin(), result.end());
+    // result.insert(result.begin() + 1, '.');
     return result;
   }
   else{
     if (numerator < 0 || denominator < 0) { // ensure that negative sign is always in the numerator
       denominator = abs(denominator);
-      numerator = - abs(numerator);
+      numerator = -abs(numerator);
     }
     return decimal_to_other(decimal_number, numerator, denominator);
   }
+}
+
+String japanese_ogre_transmutation_wizard(char* ogre_wizard_test_subject){
+  String transformed_japanese_ogre = "";
+  for (int i = 0; i < input_length; i++){
+    if (*(ogre_wizard_test_subject+i) != ' '){
+      transformed_japanese_ogre = transformed_japanese_ogre + *(ogre_wizard_test_subject+i);
+    }
+  }
+  return transformed_japanese_ogre;
 }
 
 
