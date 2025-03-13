@@ -61,29 +61,31 @@ void setup() {
   //delay(1000);
   //int manum[16]={0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1};
   //lcd.print(other_to_decimal(manum, 2, 1));
-  char* ptr = fractional_bases(7, 2, -3);
+  //char* ptr = fractional_bases(7, 2, -3);
   //char y = *ptr;
-  lcd.print(japanese_ogre_transmutation_wizard(ptr));
+  //cd.print(japanese_ogre_transmutation_wizard(ptr));
 }
 
 void loop() {
-  // if(mode == "menu") {
-  //   menu();
-  // } else if(mode == "base 1"){
-  //   set_base(1);
-  // } else if(mode == "base 2"){
-  //   set_base(2);
-  // } else {
-  //   lcd.clear();
-  //   lcd.print("not implemented");
-  //   lcd.setCursor(0, 1);
-  //   lcd.print("return to menu");
-  //   mode = "menu";
-  //   delay(2000);
-  // }
+  if(mode == "menu") {
+    menu();
+  } else if(mode == "base 1"){
+    set_base(1);
+  } else if(mode == "base 2"){
+    set_base(2);
+  } else if(mode == "calc"){
+    calculate();
+  } else {
+    lcd.clear();
+    lcd.print("not implemented");
+    lcd.setCursor(0, 1);
+    lcd.print("return to menu");
+    mode = "menu";
+    delay(2000);
+  }
 }
 
-String get_input(String msg) {
+String get_input(String msg, String mode) {
   String user_input = "";
   lcd.clear();
   lcd.print(msg);
@@ -93,7 +95,11 @@ String get_input(String msg) {
         if (key == select) {
           return user_input;
         } else if(key == menu_key){
-          user_input = user_input + japanese_ogre_chosen_one();
+          if (mode == "calculate") {
+            user_input = user_input + user_input.length() == 0? "-": user_input[user_input.length()-1] == ' '? (String) "": (String)" "; //japanese ogre hopium
+          } else if (mode == "menu") {
+            user_input = user_input + japanese_ogre_chosen_one();
+          }
           lcd.setCursor(0, 1);
           lcd.print(user_input);
         } else{
@@ -110,8 +116,8 @@ String get_input(String msg) {
 }
 
 char japanese_ogre_chosen_one(){
-  const byte optnum = 3;
-  const char options[optnum] = {'/', '-', ' '};
+  const byte optnum = 2;
+  const char options[optnum] = {'/', '-'};
   byte japanese_ogre_location = 0;
   bool japanese_ogre_direction = true; //true = top, false = bottom
 
@@ -195,12 +201,49 @@ void menu() {
 }
 
 void calculate() {
-  // add calculation code
+  lcd.clear();
+  String user_input = get_input("Insert msg", "calculate");
+  bool is_negative = (user_input[0] == '-');
+  
+  int count = 0;
+  for (int i = 0; i < input_length; i++){
+    count += (user_input[i] == ' ');
+  }
+  if (!count) {
+    int user_input_array[user_input.length() - is_negative];
+    for (int i = 0; i < user_input_array[user_input.length() - is_negative]; i++) {
+      user_input_array[i] = (int)user_input[i+is_negative];
+    }
+  } else {
+    int user_input_array[count];
+    current_index = user_input.indexOf(' ');
+    for (int i = 0; i < count; i++) {
+      user_input_array[i] = user_input.substring(current_index+1, user_input.indexOf(' ', current_index+1)).toInt();
+      current_index = user_input.indexOf(' ', current_index+1)
+    }
+  }
+
+  float decimal_number = other_to_decimal(is_negative, user_input_array, base_1_numerator, base_1_denominator);
+  String result = decimal_number == (int)decimal_number? "":"R";
+  result = result + (fractional_bases((int) decimal_number, base_2_numerator, base_2_denominator));
+  lcd.print(user_input);
+  lcd.setCursor(0, 1);
+  lcd.print(result);
+  while (true) {
+    char key = keypad.getKey();
+    if (key == menu_key) {
+      mode = "menu";
+      return;
+    }
+    if (key == select) {
+      mode = "calc";
+    }
+  }
 }
 
 void set_base(int the_japanese_ogres_wanted_to_know_what_base_to_change_komma_so_the_japanese_ogres_crafted_this_variable_period_it_apostrophe_s_purpose_is_telling_the_function_what_base_to_change_period){
   mode = "menu";
-  String user_input = get_input("Base " + String(the_japanese_ogres_wanted_to_know_what_base_to_change_komma_so_the_japanese_ogres_crafted_this_variable_period_it_apostrophe_s_purpose_is_telling_the_function_what_base_to_change_period) + ":");
+  String user_input = get_input("Base " + String(the_japanese_ogres_wanted_to_know_what_base_to_change_komma_so_the_japanese_ogres_crafted_this_variable_period_it_apostrophe_s_purpose_is_telling_the_function_what_base_to_change_period) + ":", "base");
   lcd.clear();
   if (user_input.indexOf('/', user_input.indexOf('/')+1) != -1) {
     lcd.print("bad / try again");
@@ -243,17 +286,13 @@ void set_base(int the_japanese_ogres_wanted_to_know_what_base_to_change_komma_so
   delay(1000);
 }
 
-
-
-
 // calculation methods:
-
-float other_to_decimal(int other_number[input_length], int numerator, int denominator) {
+float other_to_decimal(bool is_negative, int other_number[input_length], int numerator, int denominator) {
   float decimal_number = 0;
   for (int i = input_length; i >= 0; i--) { 
-    decimal_number += other_number[i]*(pow(numerator, 15-i)/pow(denominator, input_length-1-i));
+    decimal_number += other_number[i]*(pow(numerator, 15-i)/pow(denominator, 15-i));
   }
-  return decimal_number;
+  return is_negative? -decimal_number : decimal_number;
 }
 
 char* decimal_to_other(int decimal_number, int new_base, int denominator) {
@@ -350,6 +389,12 @@ String japanese_ogre_transmutation_wizard(char* ogre_wizard_test_subject){
   }
   return transformed_japanese_ogre;
 }
+
+//changed get_input
+//added calculate
+//added negative to other_to_decimal
+
+//leading space for digits > 9
 
 
 
