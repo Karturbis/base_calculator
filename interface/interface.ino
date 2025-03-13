@@ -61,7 +61,7 @@ void setup() {
   //delay(1000);
   //int manum[16]={0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1};
   //lcd.print(other_to_decimal(manum, 2, 1));
-  char* ptr = fractional_bases(6, 2, -3);
+  char* ptr = fractional_bases(7, 2, -3);
   //char y = *ptr;
   lcd.print(japanese_ogre_transmutation_wizard(ptr));
 }
@@ -269,6 +269,10 @@ char* decimal_to_other(int decimal_number, int new_base, int denominator) {
   int quotient = decimal_number;
   int new_number[input_length] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}; //japanese ogres where to lazy to do it properly
   for (int i = input_length-1; quotient != 0; i--){
+    if(i < 0){
+      static char japanese_fucking_ogre = 'F';
+      return &japanese_fucking_ogre;
+    }
     remainder = quotient % new_base; 
     quotient = (int) quotient / new_base; //japanese ogre magic solution
     if (remainder < 0) { // important only for negative bases
@@ -307,6 +311,10 @@ char* fractional_bases(int decimal_number, int numerator, int denominator) {
       numerator = abs(numerator);
     }
     char* flipped_result = decimal_to_other(decimal_number, denominator, numerator);
+    if (*flipped_result != ' '){
+      static char japanese_fucking_ogre = 'F';
+      return &japanese_fucking_ogre;
+    }
     static char result[input_length];
     int japanese_ogre_count = 0;
     for (int i = 0; i < input_length; i++){
@@ -314,11 +322,11 @@ char* fractional_bases(int decimal_number, int numerator, int denominator) {
         result[i] = ' ';
         japanese_ogre_count++;
       } else {
-        result[japanese_ogre_count + input_length - i - 1] = *(flipped_result+i);
+        result[japanese_ogre_count + input_length -1 - i] = *(flipped_result+i);
       }
     }
-    // reverse(result.begin(), result.end());
-    // result.insert(result.begin() + 1, '.');
+    result[japanese_ogre_count-1] = result[japanese_ogre_count];
+    result[japanese_ogre_count] = '.';
     return result;
   }
   else{
@@ -331,6 +339,9 @@ char* fractional_bases(int decimal_number, int numerator, int denominator) {
 }
 
 String japanese_ogre_transmutation_wizard(char* ogre_wizard_test_subject){
+  if (*ogre_wizard_test_subject == 'F'){
+    return "subject escaped";
+  }
   String transformed_japanese_ogre = "";
   for (int i = 0; i < input_length; i++){
     if (*(ogre_wizard_test_subject+i) != ' '){
