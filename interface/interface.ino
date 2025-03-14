@@ -59,14 +59,17 @@ void setup() {
   // print welcome screen
   //lcd.print("Base number calc)";
   //delay(1000);
-  //int manum[16]={0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1};
+  int manum[16]={0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1};
   //lcd.print(other_to_decimal(manum, 2, 1));
   //char* ptr = fractional_bases(7, 2, -3);
   //char y = *ptr;
-  lcd.print("japanese_ogre_transmutation_wizard(ptr)");
+  // String a = "abcd";
+  lcd.print(other_to_decimal(false, &manum[0], 2, 1));
+  //delay(1000);
+  lcd.clear();
 }
 
-void loop() {
+ void loop() {
   if(mode == "menu") {
     menu();
   } else if(mode == "base 1"){
@@ -83,7 +86,7 @@ void loop() {
     mode = "menu";
     delay(2000);
   }
-}
+ }
 
 String get_input(String msg, String mode) {
   String user_input = "";
@@ -96,18 +99,18 @@ String get_input(String msg, String mode) {
           return user_input;
         } else if(key == menu_key) {
           if (mode == "calculate") {
-            if (user_input.length() > 0) {
+            //if (user_input.length() > 0) {
               int japanese_ogre_big_chungus = get_input("enter digit", "int only").toInt();
-              if (japanese_ogre_big_chungus > 36) {
+              if (japanese_ogre_big_chungus > 35) {
                 lcd.setCursor(0, 1);
                 lcd.print("too much chonk  ");
                 delay(1000);
               } else {
                 user_input = user_input + int_to_char[japanese_ogre_big_chungus];
               }
-            } else {
-              user_input = user_input + '-';
-            }
+            // } else {
+            //   user_input = user_input + '-';
+            // }
           } else if (mode == "base") {
             user_input = user_input + japanese_ogre_chosen_one();
           }
@@ -169,8 +172,8 @@ char japanese_ogre_chosen_one(){
 }
 
 void menu() {
-  const byte optnum = 4;
-  const String options[optnum] = {"calc", "base 1", "base 2", "opt 3"};
+  const byte optnum = 3;
+  const String options[optnum] = {"calc", "base 1", "base 2"};
   byte japanese_ogre_location = 0;
   bool japanese_ogre_direction = true; //true = top, false = bottom
 
@@ -221,31 +224,20 @@ void calculate() {
     mode = "calc";
       return;
   }
-  int user_input_array[input_length];
-  for (int i = user_input.length()-1; i > is_negative; i--) {
-    user_input_array[input_length-1 - user_input.length()+i] = ((int)user_input[i] <= '9')? (int)user_input[i] - (int)'0' : (int)user_input[i] - (int)'A';
+  int user_input_array[input_length] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+  for (int i = user_input.length()-1; i >= is_negative; i--) {
+    user_input_array[input_length - user_input.length()+i] = ((int)user_input[i] <= '9')? (int)user_input[i] - (int)'0' : (int)user_input[i] - (int)'A' + 10;
   }
-  
-  // int count = 0; //rewrite
-  // for (int i = 0; i < input_length; i++){
-  //   count += (user_input[i] == ' ');
-  // }
-  // if (!count) {
-  //   for (int i = 0; i < user_input_array[user_input.length() - is_negative]; i++) {
-  //     user_input_array[i] = (int)user_input[i+is_negative];
-  //   }
-  // } else {
-  //   int current_index = user_input.indexOf(' ');
-  //   for (int i = 0; i < count; i++) {
-  //     user_input_array[i] = user_input.substring(current_index+1, user_input.indexOf(' ', current_index+1)).toInt();
-  //     current_index = user_input.indexOf(' ', current_index+1);
-  //   }
-  // }
+
+  //int user_inpt_array[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0};
 
   float decimal_number = other_to_decimal(is_negative, user_input_array, base_1_numerator, base_1_denominator);
-  String result = decimal_number == (int)decimal_number? "":"R";
+  // lcd.print(decimal_number);
+  // delay(100);
+  // lcd.clear();
+  String result = (decimal_number - round(decimal_number < 0.0001))? "":"R";
   result = result + japanese_ogre_transmutation_wizard(fractional_bases(round(decimal_number), base_2_numerator, base_2_denominator));
-  lcd.print(user_input);
+  lcd.print(round(decimal_number));
   lcd.setCursor(0, 1);
   lcd.print(result);
   while (true) {
@@ -283,13 +275,13 @@ void set_base(int the_japanese_ogres_wanted_to_know_what_base_to_change_komma_so
   int slash_index = user_input.indexOf('/');
   int numerator = user_input.substring(0, slash_index).toInt();
   int denominator = slash_index + 1? user_input.substring(slash_index + 1).toInt() : 1;
-  if(!numerator || !denominator || numerator > 36 || denominator > 36){
+  if(!numerator || !denominator || numerator > 35 || denominator > 35 || numerator == denominator){
     lcd.print("input error");
     delay(1000);
     return;
   }
 
-  if(the_japanese_ogres_wanted_to_know_what_base_to_change_komma_so_the_japanese_ogres_crafted_this_variable_period_it_apostrophe_s_purpose_is_telling_the_function_what_base_to_change_period-1){
+  if(the_japanese_ogres_wanted_to_know_what_base_to_change_komma_so_the_japanese_ogres_crafted_this_variable_period_it_apostrophe_s_purpose_is_telling_the_function_what_base_to_change_period == 1){
     base_1_numerator = numerator;
     base_1_denominator = denominator;
   } else{
@@ -309,14 +301,18 @@ void set_base(int the_japanese_ogres_wanted_to_know_what_base_to_change_komma_so
 // calculation methods:
 float other_to_decimal(bool is_negative, int other_number[input_length], int numerator, int denominator) {
   float decimal_number = 0;
-  for (int i = input_length; i >= 0; i--) { 
+  for (int i = input_length-1; i >= 0; i--) { 
     decimal_number += other_number[i]*(pow(numerator, 15-i)/pow(denominator, 15-i));
   }
   return is_negative? -decimal_number : decimal_number;
+  return decimal_number;
 }
 
 char* decimal_to_other(int decimal_number, int new_base, int denominator) {
-  static char new_number_char[input_length] = {' ', ' ', ' ', ' ',' ', ' ', ' ', ' ',' ', ' ', ' ', ' ',' ', ' ', ' ', ' '}; //japanese ogres where to lazy to do it properly
+  static char new_number_char[input_length];
+  for (int i = 0; i < input_length; i++){
+    new_number_char[i] = ' ';
+  }
   bool is_negative;
   if (decimal_number < 0 && new_base > 0) {
     is_negative = true;
@@ -375,6 +371,9 @@ char* fractional_bases(int decimal_number, int numerator, int denominator) {
       return &japanese_fucking_ogre;
     }
     static char result[input_length];
+    for (int i = 0; i < input_length; i++){
+      result[i] = ' ';
+    }
     int japanese_ogre_count = 0;
     for (int i = 0; i < input_length; i++){
       if (*(flipped_result+i) == ' '){
@@ -414,10 +413,11 @@ String japanese_ogre_transmutation_wizard(char* ogre_wizard_test_subject){
 //added calculate
 //added negative to other_to_decimal
 
-//fix calc and user input
-//-no longer input thatn 16
+//fix negative
+//large inputs
 
 //leading space for digits > 9
+//remember to reset static
 
 
 
