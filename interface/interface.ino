@@ -34,19 +34,19 @@ LiquidCrystal lcd(rs, en, data_4, data_5, data_6, data_7);
 const int ROW_NUMBER = 4;
 const int COLUMN_NUMBER = 4;
 char keys[ROW_NUMBER][COLUMN_NUMBER] = {
-  {'1', '2', '3', 'A'},
-  {'4', '5', '6', 'B'},
-  {'7', '8', '9', 'C'},
-  {'*', '0', '#', 'D'}
+  {'M', 'U', 'D', 'S'},
+  {'9', '6', '3', '*'},
+  {'8', '5', '2', '*'},
+  {'7', '4', '1', '0'}
 };
 byte pin_rows[ROW_NUMBER] = {13, 12, 11, 10};
 byte pin_columns[COLUMN_NUMBER] = {9, 8, 7, 6};
 
 //key meanings
-const char up = 'A';
-const char down = 'B';
-const char select = '#';
-const char menu_key = 'C';
+const char up = 'U';
+const char down = 'D';
+const char select = 'S';
+const char menu_key = 'M';
 
 
 
@@ -177,7 +177,7 @@ void menu() {
 }
 
 void calculate() {
-  String user_input = get_input("enter b1 number", "calculate");
+  String user_input = get_input("from" + (String) base_1_numerator + '/' + (String)base_1_denominator + " to" + (String) base_2_numerator + '/' + (String) base_2_denominator, "calculate");
   lcd.clear();
   bool is_negative = (user_input[0] == '-');
   if (user_input.length()-is_negative < 0 || user_input.length()-is_negative > 16) {
