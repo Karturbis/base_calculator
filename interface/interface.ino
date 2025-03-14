@@ -64,9 +64,9 @@ void setup() {
   //char* ptr = fractional_bases(7, 2, -3);
   //char y = *ptr;
   // String a = "abcd";
-  lcd.print(other_to_decimal(false, &manum[0], 2, 1));
+  //lcd.print(other_to_decimal(false, &manum[0], 2, 1));
   //delay(1000);
-  lcd.clear();
+  //lcd.clear();
 }
 
  void loop() {
@@ -215,7 +215,7 @@ void menu() {
 }
 
 void calculate() {
-  String user_input = get_input("Insert msg", "calculate");
+  String user_input = get_input("enter b1 number", "calculate");
   lcd.clear();
   bool is_negative = (user_input[0] == '-');
   if (user_input.length()-is_negative < 0 || user_input.length()-is_negative > 16) {
@@ -237,7 +237,8 @@ void calculate() {
   // lcd.clear();
   String result = (decimal_number - round(decimal_number < 0.0001))? "":"R";
   result = result + japanese_ogre_transmutation_wizard(fractional_bases(round(decimal_number), base_2_numerator, base_2_denominator));
-  lcd.print(round(decimal_number));
+  //lcd.print(round(decimal_number));
+  lcd.print(user_input);
   lcd.setCursor(0, 1);
   lcd.print(result);
   while (true) {
@@ -314,8 +315,8 @@ char* decimal_to_other(int decimal_number, int new_base, int denominator) {
     new_number_char[i] = ' ';
   }
   if (!decimal_number){
-    static char japnese_hidden_ogre = '0';
-    return &japnese_hidden_ogre;
+    static char[input_length] japnese_hidden_ogre ={'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'};
+    return japnese_hidden_ogre;
   }
   bool is_negative;
   if (decimal_number < 0 && new_base > 0) {
