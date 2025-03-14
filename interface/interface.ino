@@ -277,7 +277,7 @@ char* decimal_to_other(int decimal_number, int new_base, int denominator) {
     new_number_char[i] = ' ';
   }
   if (!decimal_number){
-    static char japnese_hidden_ogre[input_length] = {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '0'};
+      static char japnese_hidden_ogre[input_length] = {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', '0'};
     return japnese_hidden_ogre;
   }
   bool is_negative;
@@ -292,7 +292,7 @@ char* decimal_to_other(int decimal_number, int new_base, int denominator) {
   int new_number[input_length] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}; //japanese ogres where to lazy to do it properly
   for (int i = input_length-1; quotient != 0; i--){
     if(i - is_negative < 0){
-      static char japanese_fucking_ogre = '|';
+      static char japanese_fucking_ogre =  '|';
       return &japanese_fucking_ogre;
     }
     remainder = quotient % new_base; 
