@@ -112,7 +112,11 @@ String get_input(String msg, String mode) {
             //   user_input = user_input + '-';
             // }
           } else if (mode == "base") {
-            user_input = user_input + japanese_ogre_chosen_one();
+            if (user_input.length() > 0) {
+              user_input = user_input + '/'; 
+            } else {
+              user_input = user_input + '-';
+            }
           }
           // lcd.setCursor(0, 1);
           // lcd.print(user_input);
@@ -126,50 +130,8 @@ String get_input(String msg, String mode) {
       }
       delay(50);
   }
-
 }
 
-char japanese_ogre_chosen_one(){
-  const byte optnum = 2;
-  const char options[optnum] = {'/', '-'};
-  byte japanese_ogre_location = 0;
-  bool japanese_ogre_direction = true; //true = top, false = bottom
-
-  lcd.clear();
-  lcd.print(options[japanese_ogre_location]);
-  lcd.setCursor(0, 1);
-  lcd.print(options[japanese_ogre_location+1]);
-  lcd.setCursor(7, (japanese_ogre_direction)? 0:1);
-  lcd.print("<");
-  
-  while (true) {
-    char key = keypad.getKey();
-    if (key) {
-      if(key == up) {
-        if(japanese_ogre_direction){
-          japanese_ogre_location = (japanese_ogre_location+(optnum-2)) % (optnum-1);
-        }
-        japanese_ogre_direction = (japanese_ogre_location == optnum-2)? !japanese_ogre_direction:true;
-
-      } else if(key == down){
-        if(!japanese_ogre_direction){
-          japanese_ogre_location = (japanese_ogre_location+1) % (optnum-1);
-        }
-        japanese_ogre_direction = (japanese_ogre_location == 0)? !japanese_ogre_direction:false;
-      } else if(key == select){
-        return options[japanese_ogre_location+!japanese_ogre_direction];
-      }
-
-      lcd.clear();
-      lcd.print(options[japanese_ogre_location]);
-      lcd.setCursor(0, 1);
-      lcd.print(options[japanese_ogre_location+1]);
-      lcd.setCursor(7, (japanese_ogre_direction)? 0:1);
-      lcd.print("<");
-    }
-    delay(50);
-  }
-}
 
 void menu() {
   const byte optnum = 3;
