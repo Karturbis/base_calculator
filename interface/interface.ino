@@ -177,7 +177,7 @@ void menu() {
 }
 
 void calculate() {
-  String user_input = get_input("from" + (String) base_1_numerator + '/' + (String)base_1_denominator + " to" + (String) base_2_numerator + '/' + (String) base_2_denominator, "calculate");
+  String user_input = get_input("f" + (String) base_1_numerator + '/' + (String)base_1_denominator + " t" + (String) base_2_numerator + '/' + (String) base_2_denominator, "calculate");
   lcd.clear();
   bool is_negative = (user_input[0] == '-');
   if (user_input.length()-is_negative < 0 || user_input.length()-is_negative > 16) {
