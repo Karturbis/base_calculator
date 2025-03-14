@@ -315,7 +315,7 @@ char* decimal_to_other(int decimal_number, int new_base, int denominator) {
     new_number_char[i] = ' ';
   }
   if (!decimal_number){
-    static char[input_length] japnese_hidden_ogre ={'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'};
+    static char japnese_hidden_ogre[input_length] = {'0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'};
     return japnese_hidden_ogre;
   }
   bool is_negative;
@@ -349,8 +349,8 @@ char* decimal_to_other(int decimal_number, int new_base, int denominator) {
   }
 
   if (is_negative){
-    for (int i = input_length-1; i > 0; i--) {
-      if (new_number[i] != -1){
+    for (int i = 0; i < input_length-1; i++) {
+      if (new_number[i+1] != -1){
         new_number_char[i] = '-';
         break;
       }
