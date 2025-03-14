@@ -313,6 +313,10 @@ char* decimal_to_other(int decimal_number, int new_base, int denominator) {
   for (int i = 0; i < input_length; i++){
     new_number_char[i] = ' ';
   }
+  if (!decimal_number){
+    static char japnese_hidden_ogre = '0';
+    return &japnese_hidden_ogre;
+  }
   bool is_negative;
   if (decimal_number < 0 && new_base > 0) {
     is_negative = true;
