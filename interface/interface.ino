@@ -260,7 +260,7 @@ void set_base(int base_to_change) {
   int denominator = slash_index + 1 ? user_input.substring(slash_index + 1).toInt() : 1;
 
   // Validate the numerator and denominator
-  if (!numerator || !denominator || numerator > 35 || denominator > 35 || numerator == denominator) {
+  if (!numerator || !denominator || abs(numerator) > 35 || abs(denominator) > 35 || numerator == denominator) {
     lcd.print("input error");
     delay(1000);
     return;
