@@ -199,7 +199,7 @@ void calculate() {
     mode = "calc";
     return;
   }
-
+  
   // Convert input to an array of integers
   int user_input_array[input_length] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   for (int i = user_input.length() - 1; i >= is_negative; i--) {
