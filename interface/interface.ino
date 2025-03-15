@@ -3,7 +3,7 @@
 #include <LiquidCrystal.h> // For controlling the LCD display
 #include <Keypad.h>        // For interfacing with the keypad
 
-using namespace std;       // Use the standard namespace (not strictly necessary in Arduino)
+using namespace std;       // Use the standard namespace
 
 // Array to map integers (0-35) to their corresponding characters (0-9, A-Z)
 const char int_to_char[36] = {
@@ -43,7 +43,7 @@ const int COLUMN_NUMBER = 4; // Number of columns in the keypad
 char keys[ROW_NUMBER][COLUMN_NUMBER] = {
   {'M', 'U', 'D', 'S'}, // Row 1
   {'9', '6', '3', '*'}, // Row 2
-  {'8', '5', '2', '*'}, // Row 3
+  {'8', '5', '2', 'C'}, // Row 3
   {'7', '4', '1', '0'}  // Row 4
 };
 
@@ -56,7 +56,7 @@ const char up = 'U';       // Up button
 const char down = 'D';     // Down button
 const char select = 'S';   // Select button
 const char menu_key = 'M'; // Menu button
-
+const char special_char = 'C';
 // Initialize the keypad
 Keypad keypad = Keypad(makeKeymap(keys), pin_rows, pin_columns, ROW_NUMBER, COLUMN_NUMBER);
 
@@ -64,10 +64,6 @@ Keypad keypad = Keypad(makeKeymap(keys), pin_rows, pin_columns, ROW_NUMBER, COLU
 void setup() {
   // Initialize the LCD display with 16 columns and 2 rows
   lcd.begin(16, 2);
-
-  // Example code (commented out)
-  // int manum[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1};
-  // lcd.print(other_to_decimal(manum, 2, 1));
 }
 
 // Main loop: Continuously runs after setup
@@ -114,14 +110,19 @@ String get_input(String msg, String mode) {
           } else {
             user_input = user_input + int_to_char[japanese_ogre_big_chungus];
           }
-        } else if (mode == "base") {
+        } 
+      } else if (key == special_char) {
+        if (mode == "base") {
           // Handle special input for base mode
           if (user_input.length() > 0) {
             user_input = user_input + '/'; 
           } else {
             user_input = user_input + '-';
           }
+        } else if (mode == "calculate") {
+          user_input = user_input + '-';
         }
+
       } else if (key >= '0' && key <= '9') {
         // Append numeric keys to the input
         user_input = user_input + key;
