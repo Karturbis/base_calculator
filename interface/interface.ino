@@ -119,7 +119,7 @@ String get_input(String msg, String mode) {
           } else {
             user_input = user_input + '-';
           }
-        } else if (mode == "calculate") {
+        } else if (mode == "calculate" && user_input.length() == 0) {
           user_input = user_input + '-';
         }
 
@@ -199,7 +199,7 @@ void calculate() {
     mode = "calc";
     return;
   }
-  
+
   // Convert input to an array of integers
   int user_input_array[input_length] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   for (int i = user_input.length() - 1; i >= is_negative; i--) {
