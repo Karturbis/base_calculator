@@ -210,7 +210,7 @@ void calculate() {
   float decimal_number = other_to_decimal(is_negative, user_input_array, base_1_numerator, base_1_denominator);
 
   // Convert the decimal number to the target base
-  String result = (decimal_number - round(decimal_number < 0.0001)) ? "" : "R";
+  String result = (decimal_number - round(decimal_number) < 0.0001) ? "" : "R";
   result = result + japanese_ogre_transmutation_wizard(fractional_bases(round(decimal_number), base_2_numerator, base_2_denominator));
 
   // Display the result
