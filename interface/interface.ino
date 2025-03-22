@@ -60,6 +60,8 @@ const char special_char = 'C';
 // Initialize the keypad
 Keypad keypad = Keypad(makeKeymap(keys), pin_rows, pin_columns, ROW_NUMBER, COLUMN_NUMBER);
 
+bool japanese_ogre_witcher_needed = false;
+
 // Setup function: Runs once at startup
 void setup() {
   // Initialize the LCD display with 16 columns and 2 rows
@@ -185,6 +187,7 @@ void menu() {
   }
 }
 
+
 // Function to perform calculations
 void calculate() {
   // Get user input
@@ -207,16 +210,23 @@ void calculate() {
   }
 
   // Convert the input to a decimal number
-  float decimal_number = other_to_decimal(is_negative, user_input_array, base_1_numerator, base_1_denominator);
+  double decimal_number = other_to_decimal(is_negative, user_input_array, base_1_numerator, base_1_denominator);
+  if (japanese_ogre_witcher_needed){
+    lcd.print(user_input);
+    lcd.setCursor(0, 1);
+    lcd.print("atrocity slain");
+  } else {
+    // Convert the decimal number to the target base
+    String result = (decimal_number - round(decimal_number) < 0.0001) ? "" : "R";
+    result = result + japanese_ogre_transmutation_wizard(fractional_bases(round(decimal_number), base_2_numerator, base_2_denominator));
 
-  // Convert the decimal number to the target base
-  String result = (decimal_number - round(decimal_number) < 0.0001) ? "" : "R";
-  result = result + japanese_ogre_transmutation_wizard(fractional_bases(round(decimal_number), base_2_numerator, base_2_denominator));
+    // Display the result
+    lcd.print(user_input);
+    lcd.print(decimal_number);
+    lcd.setCursor(0, 1);
+    lcd.print(result);
 
-  // Display the result
-  lcd.print(user_input);
-  lcd.setCursor(0, 1);
-  lcd.print(result);
+  }
 
   // Wait for user input
   while (true) {
@@ -284,16 +294,23 @@ void set_base(int base_to_change) {
 }
 
 // Function to convert a number from another base to decimal
-float other_to_decimal(bool is_negative, int other_number[input_length], int numerator, int denominator) {
-  float decimal_number = 0;
+double other_to_decimal(bool is_negative, int other_number[input_length], int numerator, int denominator) {
+  double decimal_number = 0;
+  japanese_ogre_witcher_needed = false;
+  double japanese_ogre_test_subject;
   for (int i = input_length - 1; i >= 0; i--) {
-    decimal_number += other_number[i] * (pow(numerator, 15 - i) / pow(denominator, 15 - i));
+    japanese_ogre_test_subject = decimal_number + other_number[i] * (pow(numerator, 15 - i) / pow(denominator, 15 - i));
+    if ((int)japanese_ogre_test_subject == 0 && decimal_number != -other_number[i] * (pow(numerator, 15 - i) / pow(denominator, 15 - i))) {
+      japanese_ogre_witcher_needed = true;
+      return 0;
+    }
+    decimal_number = japanese_ogre_test_subject;
   }
   return is_negative ? -decimal_number : decimal_number;
 }
 
 // Function to convert a decimal number to another base
-char* decimal_to_other(int decimal_number, int new_base, int denominator) {
+char* decimal_to_other(long decimal_number, int new_base, int denominator) {
   static char new_number_char[input_length];
   for (int i = 0; i < input_length; i++) {
     new_number_char[i] = ' ';
@@ -310,15 +327,15 @@ char* decimal_to_other(int decimal_number, int new_base, int denominator) {
     is_negative = false;
   }
   int remainder = 0;
-  int quotient = decimal_number;
-  int new_number[input_length] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+  long quotient = decimal_number;
+  long new_number[input_length] = {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
   for (int i = input_length - 1; quotient != 0; i--) {
     if (i - is_negative < 0) {
       static char japanese_fucking_ogre = '|';
       return &japanese_fucking_ogre;
     }
     remainder = quotient % new_base;
-    quotient = (int)quotient / new_base;
+    quotient = (long)quotient / new_base;
     if (remainder < 0) {
       remainder += abs(new_base);
       quotient++;
@@ -343,7 +360,7 @@ char* decimal_to_other(int decimal_number, int new_base, int denominator) {
 }
 
 // Function to handle fractional bases
-char* fractional_bases(int decimal_number, int numerator, int denominator) {
+char* fractional_bases(long decimal_number, int numerator, int denominator) {
   if (numerator < 0 && denominator < 0) {
     numerator = abs(numerator);
     denominator = abs(denominator);
