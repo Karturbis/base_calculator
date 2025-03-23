@@ -1,5 +1,5 @@
 // Include necessary libraries
-#include <math.h>          // For mathematical functions like pow()
+//#include <math.h>          // For mathematical functions like pow()
 #include <LiquidCrystal.h> // For controlling the LCD display
 #include <Keypad.h>        // For interfacing with the keypad
 
@@ -66,11 +66,12 @@ bool japanese_ogre_witcher_needed = false;
 void setup() {
   // Initialize the LCD display with 16 columns and 2 rows
   lcd.begin(16, 2);
+
 }
 
 // Main loop: Continuously runs after setup
 void loop() {
-  // Handle different modes
+  //Handle different modes
   if (mode == "menu") {
     menu(); // Show the menu
   } else if (mode == "base 1") {
@@ -217,15 +218,14 @@ void calculate() {
     lcd.print("atrocity slain");
   } else {
     // Convert the decimal number to the target base
-    String result = (decimal_number - round(decimal_number) < 0.0001) ? "" : "R";
+    String result = (abs(decimal_number - round(decimal_number)) < 0.0001) ? "" : "R";
     result = result + japanese_ogre_transmutation_wizard(fractional_bases(round(decimal_number), base_2_numerator, base_2_denominator));
 
     // Display the result
     lcd.print(user_input);
-    lcd.print(decimal_number);
+    //lcd.print(decimal_number);
     lcd.setCursor(0, 1);
     lcd.print(result);
-
   }
 
   // Wait for user input
@@ -291,6 +291,14 @@ void set_base(int base_to_change) {
   lcd.setCursor(0, 1);
   lcd.print(denominator);
   delay(1000);
+}
+
+long pow(int base, int expt) {
+  long result = 1;
+  for (int i = 0; i < expt; i++) {
+    result *= base;
+  }
+  return result;
 }
 
 // Function to convert a number from another base to decimal
