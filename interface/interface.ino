@@ -1,5 +1,4 @@
 // Include necessary libraries
-//#include <math.h>          // For mathematical functions like pow()
 #include <LiquidCrystal.h> // For controlling the LCD display
 #include <Keypad.h>        // For interfacing with the keypad
 
@@ -296,6 +295,10 @@ void set_base(int base_to_change) {
 long pow(int base, int expt) {
   long result = 1;
   for (int i = 0; i < expt; i++) {
+    if (abs(result) > abs(INT32_MAX/base)) {
+      japanese_ogre_witcher_needed = true;
+      return 0;
+    }
     result *= base;
   }
   return result;
@@ -303,16 +306,17 @@ long pow(int base, int expt) {
 
 // Function to convert a number from another base to decimal
 double other_to_decimal(bool is_negative, int other_number[input_length], int numerator, int denominator) {
-  double decimal_number = 0;
   japanese_ogre_witcher_needed = false;
+  double decimal_number = 0;
   double japanese_ogre_test_subject;
   for (int i = input_length - 1; i >= 0; i--) {
-    japanese_ogre_test_subject = decimal_number + other_number[i] * (pow(numerator, 15 - i) / pow(denominator, 15 - i));
-    if ((int)japanese_ogre_test_subject == 0 && decimal_number != -other_number[i] * (pow(numerator, 15 - i) / pow(denominator, 15 - i))) {
-      japanese_ogre_witcher_needed = true;
-      return 0;
+    if (other_number[i] != 0){
+      if (japanese_ogre_witcher_needed || (pow(numerator, 15 - i) / pow(denominator, 15 - i)) > INT32_MAX/other_number[i] || other_number[i] * (pow(numerator, 15 - i) / pow(denominator, 15 - i)) > INT32_MAX - decimal_number) {
+        japanese_ogre_witcher_needed = true;
+        return 0;
+      }
+      decimal_number += other_number[i] * (pow(numerator, 15 - i) / pow(denominator, 15 - i));
     }
-    decimal_number = japanese_ogre_test_subject;
   }
   return is_negative ? -decimal_number : decimal_number;
 }
