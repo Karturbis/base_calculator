@@ -78,7 +78,7 @@ void loop() {
   } else if (mode == "calc") {
     calculate(); // Perform calculations
   } else {
-    // Handle unknown mode
+    // Handle undefined mode
     lcd.clear();
     lcd.print("not implemented");
     lcd.setCursor(0, 1);
