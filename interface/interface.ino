@@ -2,8 +2,6 @@
 #include <LiquidCrystal.h> // For controlling the LCD display
 #include <Keypad.h>        // For interfacing with the keypad
 
-using namespace std;       // Use the standard namespace
-
 // Array to map integers (0-35) to their corresponding characters (0-9, A-Z)
 const char int_to_char[36] = {
   '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 
