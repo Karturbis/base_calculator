@@ -188,6 +188,7 @@ void menu() {
 
 // Function to perform calculations
 void calculate() {
+
   // Get user input
   String user_input = get_input("f" + (String)base_1_numerator + '/' + (String)base_1_denominator + " t" + (String)base_2_numerator + '/' + (String)base_2_denominator, "calculate");
   lcd.clear();
@@ -215,9 +216,15 @@ void calculate() {
     lcd.print("atrocity slain");
   } else {
     // Convert the decimal number to the target base
-    String result = (abs(decimal_number - round(decimal_number)) < 0.0001)? "" : "R";
+    String result;
+    if (base_2_numerator/base_2_denominator == 10) {
+      // because newbase is 10, there is no need for rounding or converting
+      result = decimal_number;
+    } else {
+    // round number and convert to new base:
+    result = (abs(decimal_number - round(decimal_number)) < 0.0001)? "" : "R";
     result = result + japanese_ogre_transmutation_wizard(fractional_bases(round(decimal_number), base_2_numerator, base_2_denominator));
-
+    }
     // Display the result
     lcd.print(user_input);
     lcd.setCursor(0, 1);
