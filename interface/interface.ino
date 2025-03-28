@@ -215,12 +215,11 @@ void calculate() {
     lcd.print("atrocity slain");
   } else {
     // Convert the decimal number to the target base
-    String result = (abs(decimal_number - round(decimal_number)) < 0.0001) ? "" : "R";
+    String result = (abs(decimal_number - round(decimal_number)) < 0.0001)? "" : "R";
     result = result + japanese_ogre_transmutation_wizard(fractional_bases(round(decimal_number), base_2_numerator, base_2_denominator));
 
     // Display the result
     lcd.print(user_input);
-    //lcd.print(decimal_number);
     lcd.setCursor(0, 1);
     lcd.print(result);
   }
@@ -313,7 +312,7 @@ double other_to_decimal(bool is_negative, int other_number[input_length], int nu
         japanese_ogre_witcher_needed = true;
         return 0;
       }
-      decimal_number += other_number[i] * (pow(numerator, 15 - i) / pow(denominator, 15 - i));
+      decimal_number += other_number[i] * ((double)pow(numerator, 15 - i) / pow(denominator, 15 - i));
     }
   }
   return is_negative ? -decimal_number : decimal_number;
